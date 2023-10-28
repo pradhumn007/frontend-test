@@ -13,8 +13,6 @@ const Validation = (values) => {
 
   if (values.password === "") {
     error.password = "Password Should not be empty";
-  } else if (!passwordPattern.test(values.password)) {
-    error.password = "Password dont't match";
   } else {
     error.password = "";
   }

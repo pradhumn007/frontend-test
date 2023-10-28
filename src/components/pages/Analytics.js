@@ -1,46 +1,27 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
+import Axios from "axios";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 
-const data = [
-  {
-    name: "Jan",
-    buy: 4000,
-    sell: 2400,
-  },
-  {
-    name: "Feb",
-    buy: 3000,
-    sell: 1398,
-  },
-  {
-    name: "Mar",
-    buy: 2000,
-    sell: 9800,
-  },
-  {
-    name: "Apr",
-    buy: 2780,
-    sell: 3908,
-  },
-  {
-    name: "May",
-    buy: 1890,
-    sell: 4800,
-  },
-  {
-    name: "Jun",
-    buy: 2390,
-    sell: 3800,
-  },
-  {
-    name: "Jul",
-    buy: 3490,
-    sell: 4300,
-  },
-];
-
 export default function Analytics() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    Axios({
+      url: "http://localhost:8081/dashboard/chart",
+      method: "POST",
+      headers: {
+        "auth-token": token,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        setData(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <>
       <h1>Bar chart</h1>

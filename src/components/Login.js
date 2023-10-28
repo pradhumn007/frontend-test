@@ -6,8 +6,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Validation from "./loginValidation";
+import Axios from "axios";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -19,14 +20,23 @@ export default function Login() {
     password: "",
   });
   const [errors, setErrors] = React.useState({});
-
+  const navigate = useNavigate();
   const handleInput = (e) => {
-    setValues((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(Validation(values));
+    if (errors.email === "" && errors.password === "") {
+      Axios.post("http://localhost:8081/auth/login", values)
+        .then((res) => {
+          console.log(res);
+          localStorage.setItem("token", res.data.token);
+          navigate("/home");
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (

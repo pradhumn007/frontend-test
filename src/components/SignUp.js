@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Axios from "axios";
 
 import Validation from "./signUpValidation";
 
@@ -22,13 +23,23 @@ export default function SignUp() {
   });
   const [errors, setErrors] = React.useState({});
 
+  const navigate = useNavigate();
+
   const handleInput = (e) => {
-    setValues((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(Validation(values));
+    if (errors.name === "" && errors.email === "" && errors.password === "") {
+      Axios.post("http://localhost:8081/auth/register", values)
+        .then((res) => {
+          console.log(res);
+          navigate("/");
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
