@@ -1,13 +1,20 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import Axios from "axios";
+import { Navigate } from "react-router-dom";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 
 export default function Analytics() {
   const [data, setData] = useState([]);
+  const [isLogged, setIsLogged] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (token === "") {
+      setIsLogged(false);
+    } else {
+      setIsLogged(true);
+    }
     Axios({
       url: "http://localhost:8081/dashboard/chart",
       method: "POST",
@@ -22,7 +29,7 @@ export default function Analytics() {
       .catch((err) => console.log(err));
   }, []);
 
-  return (
+  return isLogged ? (
     <>
       <h1>Bar chart</h1>
       <BarChart
@@ -44,5 +51,7 @@ export default function Analytics() {
         <Bar dataKey="sell" fill="#82ca9d" />
       </BarChart>
     </>
+  ) : (
+    <Navigate to="/" />
   );
 }

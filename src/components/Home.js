@@ -16,7 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 import SidebarItem from "./pages/SidebarItem";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -67,12 +67,13 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+  const token = localStorage.getItem("token");
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  return (
+  return !!token ? (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -156,5 +157,7 @@ export default function Dashboard() {
         </Box>
       </Box>
     </ThemeProvider>
+  ) : (
+    <Navigate to="/" />
   );
 }

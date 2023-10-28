@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import Axios from "axios";
+import { Navigate } from "react-router-dom";
 
 // Generate Order Data
 
@@ -16,8 +17,14 @@ function preventDefault(event) {
 
 export default function DataTable() {
   const [data, setData] = useState([]);
+  const [isLogged, setIsLogged] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (token === "") {
+      setIsLogged(false);
+    } else {
+      setIsLogged(true);
+    }
     Axios({
       url: "http://localhost:8081/dashboard/table",
       method: "POST",
@@ -31,7 +38,7 @@ export default function DataTable() {
       .catch((err) => console.log(err));
   }, []);
 
-  return (
+  return isLogged ? (
     <React.Fragment>
       <h2>Recent Orders</h2>
       <Table size="small">
@@ -60,5 +67,7 @@ export default function DataTable() {
         See more orders
       </Link>
     </React.Fragment>
+  ) : (
+    <Navigate to="/" />
   );
 }
